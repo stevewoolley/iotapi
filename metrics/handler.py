@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import boto3
-from boto3.dynamodb.conditions import Key, Attr
+import json
 
 BAD_REQUEST = 'BadRequest'
 FORBIDDEN = 'Forbidden'
@@ -28,17 +28,11 @@ def show(event, context):
         }
     )
     if 'Item' in response:
-        return response['Item']
+        client = boto3.client('iot-data', region_name='us-east-1')
+        response = client.get_thing_shadow(thingName=event['thing'])
+        body = response["payload"]
+        return json.loads(body.read())
     else:
         return _error(NOT_FOUND, 'Thing not found')
 
 
-def showAll(event, context):
-    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-    table = dynamodb.Table('iot-things')
-    if 'domain' not in event:
-        return _error(BAD_REQUEST, 'Must specify domain')
-    response = table.query(
-        KeyConditionExpression=Key('domain').eq(event['domain'])
-    )
-    return response['Items']

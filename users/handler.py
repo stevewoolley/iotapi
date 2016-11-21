@@ -29,10 +29,12 @@ def show(event, context):
     )
     if 'Item' in response:
         table2 = dynamodb.Table('iot-users')
-        response2 = table2.query(
-            KeyConditionExpression=Key('username').eq(event['username'])
+        response2 = table2.get_item(
+            Key={
+                'username': event['username']
+            }
         )
-        return response2['Items']
+        return response2['Item']
     else:
         return _error(NOT_FOUND, 'User not found')
 

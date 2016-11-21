@@ -16,10 +16,15 @@ def _error(status, msg):
 def show(event, context):
     dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
     table = dynamodb.Table('iot-domains')
-    if 'domainName' in event:
-        response = table.get_item(
-            Key={'domain': event['domainName']}
-        )
+
+    if 'domain' not in event:
+        return _error(BAD_REQUEST, 'Must specify domain')
+
+    response = table.get_item(
+        Key={
+            'domain': event['domain']
+        }
+    )
     if 'Item' in response:
         return response['Item']
     else:
