@@ -1,0 +1,656 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Snerted IoT API",
+    "contact": {
+      "name": "Steve Woolley",
+      "email": "steve.woolley@me.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "api.snerted.com",
+  "basePath": "/v1",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/domains": {
+      "get": {
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Result limit",
+            "default": 10,
+            "type": "integer"
+          },
+          {
+            "name": "next",
+            "in": "query",
+            "description": "Use the Link header to get the next page",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domains retrieved",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Domain"
+              }
+            },
+            "headers": {
+              "Link": {
+                "description": "Contains the link to the next page",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Domain object that needs to be added",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Domain"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Domain created",
+            "headers": {
+              "Location": {
+                "description": "Links to the newly created domain",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/domains/{domain_name}": {
+      "parameters": [
+        {
+          "name": "domain_name",
+          "in": "path",
+          "description": "Name of domain",
+          "required": true,
+          "default": "",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Domain"
+            }
+          },
+          "400": {
+            "description": "Invalid domain supplied"
+          },
+          "404": {
+            "description": "Domain not found"
+          }
+        }
+      }
+    },
+    "/domains/{domain_name}/things": {
+      "parameters": [
+        {
+          "name": "domain_name",
+          "in": "path",
+          "description": "Name of domain",
+          "required": true,
+          "default": "",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Result limit",
+            "default": 10,
+            "type": "integer"
+          },
+          {
+            "name": "next",
+            "in": "query",
+            "description": "Use the Link header to get the next page",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Things retrieved",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Thing"
+              }
+            },
+            "headers": {
+              "Link": {
+                "description": "Contains the link to the next page",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid domain supplied"
+          },
+          "404": {
+            "description": "Domain not found"
+          }
+        }
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Thing object that needs to be added to the domain",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Thing"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Thing created",
+            "headers": {
+              "Location": {
+                "description": "Links to the newly created thing",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid domain supplied"
+          },
+          "404": {
+            "description": "Domain not found"
+          }
+        }
+      }
+    },
+    "/domains/{domain_name}/things/{thing_name}": {
+      "parameters": [
+        {
+          "name": "domain_name",
+          "in": "path",
+          "description": "Name of domain",
+          "required": true,
+          "default": "",
+          "type": "string"
+        },
+        {
+          "name": "thing_name",
+          "in": "path",
+          "description": "Name of thing",
+          "required": true,
+          "default": "",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Thing retrieved",
+            "schema": {
+              "$ref": "#/definitions/Thing"
+            }
+          },
+          "400": {
+            "description": "Invalid domain/thing supplied"
+          },
+          "404": {
+            "description": "Thing not found"
+          }
+        }
+      }
+    },
+    "/domains/{domain_name}/things/{thing_name}/metrics": {
+      "parameters": [
+        {
+          "name": "domain_name",
+          "in": "path",
+          "description": "Name of domain",
+          "required": true,
+          "default": "",
+          "type": "string"
+        },
+        {
+          "name": "thing_name",
+          "in": "path",
+          "description": "Name of thing",
+          "required": true,
+          "default": "",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Result limit",
+            "default": 10,
+            "type": "integer"
+          },
+          {
+            "name": "next",
+            "in": "query",
+            "description": "Use the Link header to get the next page",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Metrics retrieved",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Metric"
+              }
+            },
+            "headers": {
+              "Link": {
+                "description": "Contains the link to the next page",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid domain/metric supplied"
+          },
+          "404": {
+            "description": "Domain/Metric not found"
+          }
+        }
+      }
+    },
+    "/domains/{domain_name}/things/{thing_name}/metrics/{metric_name}": {
+      "parameters": [
+        {
+          "name": "domain_name",
+          "in": "path",
+          "description": "Name of domain",
+          "required": true,
+          "default": "",
+          "type": "string"
+        },
+        {
+          "name": "thing_name",
+          "in": "path",
+          "description": "Name of thing",
+          "required": true,
+          "default": "",
+          "type": "string"
+        },
+        {
+          "name": "metric_name",
+          "in": "path",
+          "description": "Name of metric",
+          "required": true,
+          "default": "",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Metric"
+            }
+          },
+          "400": {
+            "description": "Invalid metric supplied"
+          },
+          "404": {
+            "description": "Metric not found"
+          }
+        }
+      }
+    },
+    "/domains/{domain_name}/things/{thing_name}/tags": {
+      "parameters": [
+        {
+          "name": "domain_name",
+          "in": "path",
+          "description": "Name of domain",
+          "required": true,
+          "default": "",
+          "type": "string"
+        },
+        {
+          "name": "thing_name",
+          "in": "path",
+          "description": "Name of thing",
+          "required": true,
+          "default": "",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Result limit",
+            "default": 10,
+            "type": "integer"
+          },
+          {
+            "name": "next",
+            "in": "query",
+            "description": "Use the Link header to get the next page",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tags retrieved",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Tag"
+              }
+            },
+            "headers": {
+              "Link": {
+                "description": "Contains the link to the next page",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid domain/metric supplied"
+          },
+          "404": {
+            "description": "Domain/Metric not found"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "result limit",
+            "default": 10,
+            "type": "integer"
+          },
+          {
+            "name": "next",
+            "in": "query",
+            "description": "use the Link header to get the next page",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users retrieved",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            },
+            "headers": {
+              "Link": {
+                "description": "Contains the link to the next page",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Created user object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User created",
+            "headers": {
+              "Location": {
+                "description": "Links to the newly created user",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "get": {
+        "summary": "Logs user into the system",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "username",
+            "description": "The user name for login",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "password",
+            "description": "The password for login in clear text",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Invalid username/password supplied"
+          }
+        }
+      }
+    },
+    "/users/logout": {
+      "get": {
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/users/{username}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "username",
+          "description": "The username that needs to be fetched",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Invalid username supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/users/{username}/domains": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "username",
+          "description": "The username that needs to be fetched",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Result limit",
+            "default": 10,
+            "type": "integer"
+          },
+          {
+            "name": "next",
+            "in": "query",
+            "description": "Use the Link header to get the next page",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domains retrieved",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Domain"
+              }
+            },
+            "headers": {
+              "Link": {
+                "description": "Contains the link to the next page",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "username",
+        "email"
+      ]
+    },
+    "Thing": {
+      "type": "object",
+      "properties": {
+        "thing_name": {
+          "type": "string"
+        },
+        "domain_name": {
+          "$ref": "#/definitions/DomainName"
+        }
+      },
+      "required": [
+        "thing_name",
+        "domain_name"
+      ]
+    },
+    "Domain": {
+      "type": "object",
+      "properties": {
+        "domain_name": {
+          "$ref": "#/definitions/DomainName"
+        }
+      },
+      "required": [
+        "domain_name"
+      ]
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "tag_name": {
+          "type": "string"
+        },
+        "domain_name": {
+          "$ref": "#/definitions/DomainName"
+        }
+      },
+      "required": [
+        "tag_name",
+        "domain_name"
+      ]
+    },
+    "Metric": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "value"
+      ]
+    },
+    "DomainName": {
+      "type": "string"
+    }
+  }
+}
