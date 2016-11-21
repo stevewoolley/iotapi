@@ -16,30 +16,20 @@ def _error(status, msg):
 
 def show(event, context):
     dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-    table = dynamodb.Table('iot-memberships')
+    table = dynamodb.Table('iot-things')
     if 'domain' not in event:
         return _error(BAD_REQUEST, 'Must specify domain')
-    if 'username' not in event:
-        return _error(BAD_REQUEST, 'Must specify username')
-    response = table.get_item(
-        Key={
-            'domain': event['domain'],
-            'username': event['username']
-        }
+    if 'thing' not in event:
+        return _error(BAD_REQUEST, 'Must specify thing')
+    response = table.query(
+        KeyConditionExpression=Key('domain').eq(event['domain']) & Key('thing').eq(event['thing'])
     )
-    if 'Item' in response:
-        table2 = dynamodb.Table('iot-users')
-        response2 = table2.query(
-            KeyConditionExpression=Key('username').eq(event['username'])
-        )
-        return response2['Items']
-    else:
-        return _error(NOT_FOUND, 'User not found')
+    return response['Items']
 
 
 def showAll(event, context):
     dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-    table = dynamodb.Table('iot-memberships')
+    table = dynamodb.Table('iot-things')
     if 'domain' not in event:
         return _error(BAD_REQUEST, 'Must specify domain')
     response = table.query(

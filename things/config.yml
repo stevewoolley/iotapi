@@ -1,4 +1,4 @@
-service: domains
+service: things
 region: us-east-1
 role: lambda_basic_execution
 runtime: python2.7
